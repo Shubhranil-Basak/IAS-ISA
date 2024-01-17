@@ -1,0 +1,14 @@
+1) general purpose registers: https://stackoverflow.com/questions/58852308/what-s-the-difference-between-eax-ebx-and-ecx-in-assembly.
+2) assembler should handle both x86 NASM assembly and normal IAS ISA assembly (depending on the input command).
+3) Processor design.
+
+more on IAS ISA assembly language
+1) comments are defined using ';' operator and the entire line from that will be ignored.
+2) the assembly program starts form the beginning of the file.
+3) the code will be the same as it is stored in memory and will look something like this.
+; IAS ISA assembly language
+<instruction> M(<memory>, <optional parameters>)
+
+; x86 NASM assembly language
+
+// in progress
