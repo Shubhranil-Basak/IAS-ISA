@@ -4,9 +4,10 @@ import sys
 
 
 class Assembler:
-    def __init__(self, inputFileName, outputFileName):
-        self.__inputFileName = inputFileName
-        self.__outputFileName = outputFileName
+    def __init__(self, inputFileName: str, outputFileName: str):
+        if self.__checkType((inputFileName, str), (outputFileName, str)):
+            self.__inputFileName = inputFileName
+            self.__outputFileName = outputFileName
 
     def __getOpCode(self, op: str, address="") -> str:
         """
@@ -88,8 +89,26 @@ class Assembler:
                 f"Error: Invalid Instruction at line {self.__lineNum} in the instruction \"{op}\".")
 
     def __printErrorAndExit(self, message: str) -> None:
+        """
+        Prints the error message and exits.
+        """
         print(message)
         sys.exit(1)
+
+    def __checkType(self, *checkList):
+        """
+        checkList must of the form,
+        (arg1, type1), (arg2, type2), (arg3, type3), ..., (argN, typeN)
+        Returns true if all the types specified are correct and none of the
+        arguments are None.
+        Throws an Error and exits otherwise.
+        """
+
+        for arg in checkList:
+            if (arg[0] == None or not isinstance(arg[0], arg[1])):
+                self.__printErrorAndExit(f"{arg[0]} is not of valid type {arg[1]}.")
+
+        return True
 
     def __convertToBin(self, num: int) -> str:
         """
