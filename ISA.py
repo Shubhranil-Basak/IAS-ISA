@@ -125,7 +125,7 @@ while True:
 
     PC = SignedBinaryToInt(PC)
 
-    line = linecache.getline('assembly.txt', PC).rstrip("\n")
+    line = linecache.getline('helloWorld.asm', PC).rstrip("\n")
     if not line:
         break
     line = line.split(" ")
@@ -254,7 +254,7 @@ while True:
             PC += 1
             PC = OperandToSignedBinary(PC)
             
-output.close()   
+output.close()
 
          
 memory = OrderedDict()

@@ -1,134 +1,168 @@
+import re
+import linecache
+import sys
+
+
 class Assembler:
     def __init__(self, inputFileName, outputFileName):
         self.__inputFileName = inputFileName
         self.__outputFileName = outputFileName
 
-        self.opCodes = {
-            "LOAD":
-            {
-                "M(": "00000001",
-                "-M(": "00000010",
-                "|M(": "00000011",
-                "-|M(": "00000100",
-                "MQ,M(": "00001001",
-                "MQ": "00001010"
-            },
-
-            "ADD":
-            {
-                "M(": "00000101",
-                "|M(": "00000111"
-            },
-
-            "SUB":
-            {
-                "M(": "00000110",
-                "|M(": "00001000"
-            },
-
-            "MUL": "00001011",
-            "DIV": "00001100",
-            "LSH": "00010100",
-            "RSH": "00010101",
-
-            "JUMP":
-            {
-                "M(":
-                {
-                    "0:19)": "00001101",  # here we have to use endswith
-                    "20:39)": "00001110"
-                },
-
-                "+ M(":
-                {
-                    "0:19)": "00001111",
-                    "20:39)": "00010000"
-                }
-            },
-
-            "STOR":
-            {
-                "M(": "00100001",
-                "8:19)": "00010010",  # here we need to use both :(
-                "28:39)": "00010011"
-            }
-        }
-
-    def __read(self) -> None:
+    def __getOpCode(self, op: str, address="") -> str:
         """
-        Reads the file content into a list.
+        Returns the opcode.
+
+        arguemnts:
+            op: the instruction itself
+            address: default is \"\".
+            The address should be of form M(XXXX)
         """
-        with open(self.__inputFileName, 'r') as fh:
-            self.__code = fh.readlines()
+        if (op == 'ADD' and address[0] == 'M'):
+            return '00000101'
 
-    def __output(self) -> None:
+        elif (op == 'STOR' and (',' not in address)):
+            return '00100001'
+
+        elif (op == 'LOAD' and address[0:2] == 'M('):
+            return '00000001'
+
+        elif (op == 'LOAD' and address[0:2] == '-M'):
+            return '00000010'
+
+        elif (op == 'LOAD' and address[0] == '|'):
+            return '00000011'
+
+        elif (op == 'LOAD' and address[0:2] == '-|'):
+            return '00000100'
+
+        elif (op == 'LOAD' and address[:5] == 'MQ,M('):
+            return '00001001'
+
+        elif (op == 'LOAD' and address == 'MQ'):
+            return '00001010'
+
+        elif (op == 'ADD' and address[0] == '|'):
+            return '00000111'
+
+        elif (op == 'SUB' and address[0] == 'M'):
+            return '00000110'
+
+        elif (op == 'SUB' and address[0] == '|'):
+            return '00001000'
+
+        elif (op == 'DIV'):
+            return '00001100'
+
+        elif (op == 'LSH'):
+            return '00010100'
+
+        elif (op == 'RSH'):
+            return '00010101'
+
+        elif (op == 'JUMP+' and address[-6:-1] == ',0:19'):
+            return '00001111'
+
+        elif (op == 'JUMP+' and address[-7:-1] == ',20:39'):
+            return '00010000'
+
+        elif (op == 'JUMP' and address[-6:-1] == ',0:19'):
+            return '00001101'
+
+        elif (op == 'JUMP' and address[-7:-1] == ',20:39'):
+            return '00001110'
+
+        elif (op == 'MUL'):
+            return '00001011'
+
+        elif (op == 'STOR' and address[-6:-1] == ',8:19'):
+            return '00010010'
+
+        elif (op == 'STOR' and address[-7:-1] == ',28:39'):
+            return '00010011'
+
+        elif (op == 'HALT'):
+            return '11111111'
+
+        else:
+            self.__printErrorAndExit(
+                f"Error: Invalid Instruction at line {self.__lineNum} in the instruction \"{op}\".")
+
+    def __printErrorAndExit(self, message: str) -> None:
+        print(message)
+        sys.exit(1)
+
+    def __convertToBin(self, num: int) -> str:
         """
-        Outputs the entire code in an .obj file.
-        TODO
+        Converts any numerical representation to bin.
+        Currently only supports binary.
+
+        TODO: Need to add functionality for more numeral systems. Like 0x, o.
         """
+        n = bin(num)[2:]
+        addr = '0'*(12-len(n)) + n
+        return addr
 
-    def __split(self, word: str) -> None:
+    def __convertInstructionToBin(self, instr: str) -> str:
         """
-        Splits the instruciton into left and right instruction.
-        Also removes the trailing and leading white spaces in each of the instruction.
-
-        TODO: Enable the split part.
+        Converts the instruction to its binary equivalent.
         """
-        # self.li, self.ri = word.split(',')
-        self.li, self.ri = word, word
-        self.li = self.li.strip()
-        self.ri = self.ri.strip()
+        pattern = "[0-9]+"
 
-    def __matchOpCode(self, code: str) -> str:
+        instr = instr.split(" ")
+
+        if len(instr) == 2:
+            opcode = self.__getOpCode(instr[0], instr[1])
+            num = re.findall(pattern, instr[1])
+        else:
+            opcode = self.__getOpCode(instr[0])
+            num = 0
+
+        if (not num):
+            address = '000000000000'
+
+        else:
+            address = self.__convertToBin(int(num[0]))
+
+        instruction = opcode + " " + address
+
+        return instruction
+
+    def __write(self, instr: str) -> None:
         """
-        Returns the binary representation of the OpCode
-
-        TODO: Encoding for STOR is left.
+        Writes the instruction into the object file.
         """
-
-        possibleOpCodes = {}
-        parentOpCode = ""
-        for x in self.opCodes.keys():
-            if code.startswith(x):
-                possibleOpCodes = self.opCodes[x]
-                parentOpCode = x
-                break
-
-        code = code.removeprefix(parentOpCode)
-        code = code.strip()
-
-        if isinstance(possibleOpCodes, str):
-            return possibleOpCodes
-
-        if parentOpCode == "JUMP":
-            for x in self.opCodes[parentOpCode].keys():
-                if code.startswith(x):
-                    for y in self.opCodes[parentOpCode][x].keys():
-                        if code.endswith(y):
-                            return self.opCodes[parentOpCode][x][y]
-
-        if parentOpCode != "STOR":
-            for x in self.opCodes[parentOpCode].keys():
-                if code.startswith(x):
-                    return self.opCodes[parentOpCode][x]
-
-    def __convertToBin(self, instruciton: str) -> str:
-        """
-        Converts the following instruction to its binary / machine code equivalent.
-        """
-        opCode = self.__matchOpCode(instruciton)
-        return opCode
+        self.__oFh.write(instr)
 
     def run(self):
         """
-        The actual assembler running.
+        Runs the actual assembler.
         """
-        self.__read()
 
-        for x in self.__code:
-            self.__split(x)
-            binaryRepOfInstruction = self.__convertToBin(self.li)
-            print(binaryRepOfInstruction)
+        self.__lineNum = 1
+
+        self.__oFh = open(self.__outputFileName, "w+")
+
+        while True:
+            line = linecache.getline(self.__inputFileName, self.__lineNum).rstrip("\n")
+            if not line:
+                break
+
+            line = line.split('//')[0]
+            line = line.split(';')
+
+            if (len(line) == 2):
+                instruction = self.__convertInstructionToBin(line[0].strip(" \n")) + " " + self.__convertInstructionToBin(line[1].strip(" \n"))
+
+                self.__write(instruction + "\n")
+
+            if (len(line) == 1):
+                instruction = self.__convertInstructionToBin(line[0].strip(" \n"))
+
+                self.__write(instruction + "\n")
+
+            self.__lineNum += 1
+
+        self.__oFh.close()
 
 
 asm = Assembler("helloWorld.asm", "helloWorld.obj")
