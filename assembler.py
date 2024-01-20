@@ -84,6 +84,9 @@ class Assembler:
         elif (op == 'HALT'):
             return '11111111'
 
+        elif (op == 'NOP'):
+            return '00000000'
+
         else:
             self.__printErrorAndExit(
                 f"Error: Invalid Instruction at line {self.__lineNum} in the instruction \"{op}\".")
@@ -106,7 +109,8 @@ class Assembler:
 
         for arg in checkList:
             if (arg[0] == None or not isinstance(arg[0], arg[1])):
-                self.__printErrorAndExit(f"{arg[0]} is not of valid type {arg[1]}.")
+                self.__printErrorAndExit(
+                    f"{arg[0]} is not of valid type {arg[1]}.")
 
         return True
 
@@ -162,7 +166,8 @@ class Assembler:
         self.__oFh = open(self.__outputFileName, "w+")
 
         while True:
-            line = linecache.getline(self.__inputFileName, self.__lineNum).rstrip("\n")
+            line = linecache.getline(
+                self.__inputFileName, self.__lineNum).rstrip("\n")
             if not line:
                 break
 
@@ -170,12 +175,14 @@ class Assembler:
             line = line.split(';')
 
             if (len(line) == 2):
-                instruction = self.__convertInstructionToBin(line[0].strip(" \n")) + " " + self.__convertInstructionToBin(line[1].strip(" \n"))
+                instruction = self.__convertInstructionToBin(line[0].strip(
+                    " \n")) + " " + self.__convertInstructionToBin(line[1].strip(" \n"))
 
                 self.__write(instruction + "\n")
 
             if (len(line) == 1):
-                instruction = self.__convertInstructionToBin(line[0].strip(" \n"))
+                instruction = self.__convertInstructionToBin(
+                    line[0].strip(" \n"))
 
                 self.__write(instruction + "\n")
 
