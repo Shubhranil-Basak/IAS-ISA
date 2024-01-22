@@ -124,7 +124,7 @@ class MainMemory:
         with open(self.__inputFileName, 'r') as fh:
             lines = fh.readlines()
 
-        lines[lineNumber] = word + '\n'
+        lines[lineNumber-1] = word + '\n'
 
         with open(self.__inputFileName, 'w+') as fh:
             fh.writelines(lines)

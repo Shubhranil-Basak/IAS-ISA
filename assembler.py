@@ -176,30 +176,34 @@ class Assembler:
 
         self.__lineNum = 1
 
+        with open(self.__inputFileName, 'r') as self.__iFh:
+            self.__lines = self.__iFh.readlines()
+
         self.__oFh = open(self.__outputFileName, "w+")
 
-        while True:
-            line = linecache.getline(
-                self.__inputFileName, self.__lineNum).rstrip("\n")
-            if not line:
-                break
+        for line in self.__lines:
+
+            line = line.strip(" \n")
 
             line = line.split('//')[0]
             line = line.split(';')
 
-            if (len(line) == 2):
+            if (len(line) == 1 and line[0] == ''):
+                self.__write("\n")
+
+            elif (len(line) == 2):
                 instruction = self.__convertInstructionToBin(line[0].strip(
                     " \n")) + " " + self.__convertInstructionToBin(line[1].strip(" \n"))
 
                 self.__write(instruction + "\n")
 
-            if (len(line) == 1 and not line[0].isnumeric()):
+            elif (len(line) == 1 and not line[0].isnumeric()):
                 instruction = self.__convertInstructionToBin(
                     line[0].strip(" \n"))
 
                 self.__write(instruction + "\n")
 
-            if (len(line) == 1 and line[0].isdecimal()):
+            elif (len(line) == 1 and line[0].isdecimal()):
                 instruction = self.__convertToBin(int(line[0]), 40)
 
                 self.__write(instruction + "\n")
