@@ -114,16 +114,29 @@ class Assembler:
 
         return True
 
-    def __convertToBin(self, num: int) -> str:
+    def __convertToBin(self, num1: int, b=12) -> str:
         """
         Converts any numerical representation to bin.
         Currently only supports binary.
 
         TODO: Need to add functionality for more numeral systems. Like 0x, o.
         """
-        n = bin(num)[2:]
-        addr = '0'*(12-len(n)) + n
-        return addr
+        n = bin(abs(num1))[2:]
+
+        number = '0'*(b-len(n)) + n
+        if num1 < 0:
+            ans = ""
+            for x in number:
+                if x == '1':
+                    ans += '0'
+                else:
+                    ans += '1'
+
+            ans = int(ans, 2) + 1
+            ans = bin(ans)[2:]
+            number = ans
+
+        return number
 
     def __convertInstructionToBin(self, instr: str) -> str:
         """
@@ -180,9 +193,14 @@ class Assembler:
 
                 self.__write(instruction + "\n")
 
-            if (len(line) == 1):
+            if (len(line) == 1 and not line[0].isnumeric()):
                 instruction = self.__convertInstructionToBin(
                     line[0].strip(" \n"))
+
+                self.__write(instruction + "\n")
+
+            if (len(line) == 1 and line[0].isdecimal()):
+                instruction = self.__convertToBin(int(line[0]), 40)
 
                 self.__write(instruction + "\n")
 

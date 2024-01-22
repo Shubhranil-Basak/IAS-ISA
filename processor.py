@@ -88,8 +88,6 @@ class MainMemory:
         if checkType((lineNumber, str)):
             lineNumber = convertToInt(lineNumber)
 
-        lineNumber += 1
-
         linecache.checkcache(self.__inputFileName)
         line = linecache.getline(self.__inputFileName,
                                  lineNumber).rstrip("\n")
@@ -202,7 +200,7 @@ class ALU:
         ac = convertToInt(word, mod)
         val = convertToInt(self.__ACval)
         val += ac
-        self.__ACval = convertToBin(ac, 40)
+        self.__ACval = convertToBin(val, 40)
         self.__printAC()
 
     def sub(self, word: str, mod=False) -> None:
@@ -248,7 +246,7 @@ class ALU:
 class MBR:
     def __init__(self):
         self.__value = convertToBin(
-            0, 8) + " " + convertToBin(-1, 12) + convertToBin(0, 8) + " " + convertToBin(-1, 12)
+            0, 8) + " " + convertToBin(0, 12) + ' ' + convertToBin(0, 8) + " " + convertToBin(0, 12)
 
     def put(self, value: str) -> None:
         """
@@ -282,7 +280,7 @@ class MBR:
 
 class IBR:
     def __init__(self):
-        self.__value = convertToBin(0, 8) + " " + convertToBin(-1, 12)
+        self.__value = convertToBin(0, 8) + " " + convertToBin(0, 12)
 
     def put(self, word: str) -> None:
         """
@@ -325,7 +323,7 @@ class IBR:
 
 
 class ProgramControlUnit:
-    def __init__(self, mm: MainMemory, alu: ALU, PC=0):
+    def __init__(self, mm: MainMemory, alu: ALU, PC=1):
         self.__IR = convertToBin(0, 8)
         self.__MAR = convertToBin(0, 12)
         self.__PC = convertToBin(PC, 12)
@@ -406,21 +404,18 @@ class ProgramControlUnit:
         if self.__IR == LOADMQ:
             self.__ALU.mq()
             print(f"Loaded AC with MQ.")
-            print(f"AC: {self.__ALU.getAC}, MQ: {self.__ALU.getMQ()}")
             return
 
         if self.__IR == MUL:
             self.__MBR.put(self.__MainMemory.getWord(convertToInt(self.__MAR)))
             self.__ALU.mul(self.__MBR.get())
             print(f"Did the multiply operation.")
-            print(f"MQ: {self.__ALU.getMQ()}, AC: {self.__ALU.getAC()}")
             return
 
         if self.__IR == DIV:
             word = self.__MainMemory.getWord(convertToInt(self.__MAR))
             self.__ALU.div(word)
             print(f"Did the division operation.")
-            print(f"MQ: {self.__ALU.getMQ()}, AC: {self.__ALU.getAC()}")
             return
 
         if self.__IR == JUMPl:
@@ -452,7 +447,7 @@ class ProgramControlUnit:
                     f"Jumping to right intruction pointed by MAR (PC -> MAR): {convertToInt(self.__PC)}")
 
         if self.__IR == STOR:
-            self.__MBR.put(self.__AC)
+            self.__MBR.put(self.__ALU.getAC())
             self.__MainMemory.writeAtMem(
                 convertToInt(self.__MAR), self.__MBR.get())
             print(f"Stored AC at memory location: {convertToInt(self.__MAR)}")
@@ -462,8 +457,6 @@ class ProgramControlUnit:
             self.__MainMemory.replaceMemoryAddr(
                 convertToInt(self.__MAR), self.__MBR.get(), 0)
             print(f"Did the STOR M(X, 28:39) operation.")
-            print(f"Now location {convertToInt(
-                self.__MAR)} contains {self.__MBR.get()}")
             return
 
         if self.__IR == STORl:
@@ -471,20 +464,16 @@ class ProgramControlUnit:
             self.__MainMemory.replaceMemoryAddr(
                 convertToInt(self.__MAR), self.__MBR.get(), 1)
             print(f"Did the STOR M(X, 8:19) operation.")
-            print(f"Now location {convertToInt(
-                self.__MAR)} contains {self.__MBR.get()}")
             return
 
         if self.__IR == LSH:
             self.__ALU.lsh()
             print(f"Did the LSH operator on AC.")
-            print(f"AC now contains: {self.__ALU.getAC()}")
             return
 
         if self.__IR == RSH:
             self.__ALU.rsh()
             print(f"Did the RSH operator on AC.")
-            print(f"AC now contains: {self.__ALU.getAC()}")
             return
 
     def run(self) -> None:
@@ -492,24 +481,20 @@ class ProgramControlUnit:
         Runs the processor.
         """
         while True:
+
+            print(f"""IR: {self.__IR}\nMAR: {self.__MAR}\nMBR: {self.__MBR.get()}\nIBR: {
+                  self.__IBR.get()}\nAC: {self.__ALU.getAC()}\nMQ: {self.__ALU.getMQ()}""")
+
             if self.__IBR.isEmpty() and self.flag:
 
                 self.__MAR = self.__PC
-                print(f"Contents in PC moved into MAR.")
-                print(f"PC: {self.__PC}, MAR: {self.__MAR}")
 
                 self.__MBR.put(self.__MainMemory.getWord(self.__MAR))
-                print(f"Memory fetched from location MAR and stored into MBR, MBR: {
-                      self.__MBR.get()}")
 
                 if self.__MBR.getli().split()[0] != NOP:
 
                     self.__IBR.put(self.__MBR.getri())
                     self.__IR, self.__MAR = self.__MBR.getli().split()
-                    print(
-                        f"Left instruction moved into IR and MAR, and right intruction in IBR")
-                    print(f"IR: {self.__IR}, MAR: {
-                          self.__MAR}, IBR: {self.__IBR.get()}")
 
                     self.__decodeAndExecute()
 
@@ -519,9 +504,6 @@ class ProgramControlUnit:
                     self.__IR = self.__IBR.getOpCode()
                     self.__MAR = self.__IBR.getMemAddr()
                     self.__PC = convertToBin(convertToInt(self.__PC) + 1)
-                    print("Left Instruction is not required.")
-                    print(f"Right instruction moved into IR and MAR.")
-                    print(f"IR: {self.__IR}, MAR: {self.__MAR}")
 
                     self.__decodeAndExecute()
 
@@ -533,7 +515,6 @@ class ProgramControlUnit:
                 print(f"IR: {self.__IR}, MAR: {self.__MAR}")
 
                 self.__PC = convertToBin(convertToInt(self.__PC) + 1)
-                print(f"Updated PC, PC: {self.__PC}")
 
                 self.__decodeAndExecute()
 
@@ -544,15 +525,10 @@ class ProgramControlUnit:
                 self.__MAR = self.__PC
                 self.__MBR.put(self.__MainMemory.getWord(
                     convertToInt(self.__MAR)))
-                print(f"Memory fetched from location MAR and stored into MBR, MBR: {
-                      self.__MBR.get()}")
 
                 self.__IBR.put(self.__MBR.getri())
                 self.__IR = self.__IBR.getOpCode()
                 self.__MAR = self.__IBR.getMemAddr()
-                print("Left Instruction is not required.")
-                print(f"Right instruction moved into IR and MAR.")
-                print(f"IR: {self.__IR}, MAR: {self.__MAR}")
 
                 self.__decodeAndExecute()
 
