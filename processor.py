@@ -1,5 +1,6 @@
 import linecache
 import sys
+from time import sleep
 
 NOTHING = '0'*8 + ' ' + '0'*12
 HALT = '11111111'
@@ -91,6 +92,10 @@ class MainMemory:
         linecache.checkcache(self.__inputFileName)
         line = linecache.getline(self.__inputFileName,
                                  lineNumber).rstrip("\n")
+
+        if line == '':
+            line = '0'*40
+
         return line
 
     def replaceMemoryAddr(self, lineNumber: int, memAddr: str, leftOrRight: int) -> None:
@@ -124,6 +129,9 @@ class MainMemory:
         with open(self.__inputFileName, 'r') as fh:
             lines = fh.readlines()
 
+        if len(lines) < lineNumber:
+            for x in range(lineNumber - len(lines)):
+                lines.append('\n')
         lines[lineNumber-1] = word + '\n'
 
         with open(self.__inputFileName, 'w+') as fh:
@@ -419,13 +427,13 @@ class ProgramControlUnit:
             return
 
         if self.__IR == JUMPl:
-            self.__IBR = NOP
+            self.__IBR.clear()
             self.__PC = self.__MAR
             print(
                 f"Jumping to left instruction pointed by MAR (PC -> MAR): {convertToInt(self.__PC)}")
 
         if self.__IR == JUMPr:
-            self.__IBR = NOP
+            self.__IBR.clear()
             self.__PC = self.__MAR
             self.flag = False
             print(
@@ -433,14 +441,14 @@ class ProgramControlUnit:
 
         if self.__IR == JUMPlIfG:
             if convertToInt(self.__ALU.getAC()) > 0:
-                self.__IBR = NOP
+                self.__IBR.clear()
                 self.__PC = self.__MAR
                 print(
                     f"Jumping to left instruction pointed by MAR (PC -> MAR): {convertToInt(self.__PC)}")
 
         if self.__IR == JUMPrIfG:
             if convertToInt(self.__ALU.getAC()) > 0:
-                self.__IBR = NOP
+                self.__IBR.clear()
                 self.__PC = self.__MAR
                 self.flag = False
                 print(
@@ -480,10 +488,14 @@ class ProgramControlUnit:
         """
         Runs the processor.
         """
+        counter = 0
         while True:
 
-            print(f"""IR: {self.__IR}\nMAR: {self.__MAR}\nMBR: {self.__MBR.get()}\nIBR: {
-                  self.__IBR.get()}\nAC: {self.__ALU.getAC()}\nMQ: {self.__ALU.getMQ()}""")
+            sleep(0.5)
+            print()
+            print(f"""IR: {self.__IR} ({convertToInt(self.__IR)})\nMAR: {self.__MAR} ({convertToInt(self.__MAR)})\nMBR: {self.__MBR.get()}\nIBR: {
+                  self.__IBR.get()}\nAC: {self.__ALU.getAC()} ({convertToInt(self.__ALU.getAC())})\nMQ: {self.__ALU.getMQ()} ({convertToInt(self.__ALU.getMQ())})""")
+            print()
 
             if self.__IBR.isEmpty() and self.flag:
 
@@ -531,6 +543,13 @@ class ProgramControlUnit:
                 self.__MAR = self.__IBR.getMemAddr()
 
                 self.__decodeAndExecute()
+
+                self.__PC = convertToBin(convertToInt(self.__PC) + 1)
+
+                self.flag = True
+
+            counter += 1
+            print(counter)
 
 
 CPU = ProgramControlUnit(MainMemory("helloWorld.obj"), ALU())
