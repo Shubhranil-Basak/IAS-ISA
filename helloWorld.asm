@@ -7,9 +7,9 @@
 0 //magnitude of resultant
 0 //decimal part of value of resultant
 10 //temp-to store memory location of the starting of the vector
-1 //x0
-2 //x1
-3 //x2
+104 //x0
+105 //x1
+106 //x2
 0 //x3
 0 //x4
 0 //buffer space for extra x components
@@ -17,9 +17,9 @@
 0
 0
 0
-2 //y0
-3 //y1
-4 //y2
+30 //y0
+31 //y1
+32 //y2
 0 //y3
 0 //y4
 0 //buffer space for extra y components

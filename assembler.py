@@ -122,18 +122,11 @@ class Assembler:
         """
         n = bin(abs(num1))[2:]
 
-        number = '0'*(b-len(n)) + n
+        number = '0'*(b-len(n)-1) + n
         if num1 < 0:
-            ans = ""
-            for x in number:
-                if x == '1':
-                    ans += '0'
-                else:
-                    ans += '1'
-
-            ans = int(ans, 2) + 1
-            ans = bin(ans)[2:]
-            number = ans
+            number = '1' + number
+        else:
+            number = '0' + number
 
         return number
 

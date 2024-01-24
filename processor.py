@@ -41,27 +41,20 @@ def checkType(*args) -> bool:
     return True
 
 
-def convertToBin(num: int, b=12) -> str:
+def convertToBin(num1: int, b=12) -> str:
     """
     Converts any numerical representation to bin.
     Currently only supports binary.
 
     TODO: Need to add functionality for more numeral systems. Like 0x, o.
     """
-    n = bin(abs(num))[2:]
+    n = bin(abs(num1))[2:]
 
-    number = '0'*(b-len(n)) + n
-    if num < 0:
-        ans = ""
-        for x in number:
-            if x == '1':
-                ans += '0'
-            else:
-                ans += '1'
-
-        ans = int(ans, 2) + 1
-        ans = bin(ans)[2:]
-        number = ans
+    number = '0'*(b-len(n)-1) + n
+    if num1 < 0:
+        number = '1' + number
+    else:
+        number = '0' + number
 
     return number
 
@@ -70,11 +63,9 @@ def convertToInt(word: str, mod=False) -> int:
     """
     Converts the given word to its integer reperesntation.
     """
-    val = int(word[0]) * (2**(len(word)-1)) * -1
-    pow = len(word) - 2
-    for x in word[1:]:
-        val += 2**pow * int(x)
-        pow -= 1
+    val = int(word[1:], 2)
+    if word[0] == '1' and not mod:
+        val *= -1
 
     return val
 
