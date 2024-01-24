@@ -21,8 +21,8 @@ JUMPl = '00001101'  # JUMP M(X,0:19)
 JUMPr = '00001110'  # JUMP M(X,20:39)
 JUMPlIfG = '00001111'  # JUMP+ M(X,0:19)
 JUMPrIfG = '00010000'  # JUMP+ M(X,20:39)
-STORr = '00010010'  # STOR M(X,8:19)
-STORl = '00010011'  # STOR M(X,28:39)
+STORl = '00010010'  # STOR M(X,8:19)
+STORr = '00010011'  # STOR M(X,28:39)
 LSH = '00010100'
 RSH = '00010101'
 STOR = '00100001'
@@ -70,7 +70,7 @@ def convertToInt(word: str, mod=False) -> int:
     """
     Converts the given word to its integer reperesntation.
     """
-    val = int(word[0]) * (2**len(word)-1) * -1
+    val = int(word[0]) * (2**(len(word)-1)) * -1
     pow = len(word) - 2
     for x in word[1:]:
         val += 2**pow * int(x)
@@ -105,7 +105,7 @@ class MainMemory:
         If leftOrRight = 1, then the left address is replaced, else the right one is replaced
         """
 
-        if leftOrRight == 1:
+        if leftOrRight == 0:
             leftOrRight = -1
         else:
             leftOrRight = 1
@@ -116,6 +116,7 @@ class MainMemory:
         with open(self.__inputFileName, 'r') as fh:
             lines = fh.readlines()
 
+        lineNumber -= 1
         line = lines[lineNumber].strip(" \n").split()
         line[leftOrRight] = memAddr
         lines[lineNumber] = " ".join(line) + '\n'
@@ -441,14 +442,14 @@ class ProgramControlUnit:
                 f"Jumping to right intruction pointed by MAR (PC -> MAR): {convertToInt(self.__PC)}")
 
         if self.__IR == JUMPlIfG:
-            if convertToInt(self.__ALU.getAC()) > 0:
+            if convertToInt(self.__ALU.getAC()) >= 0:
                 self.__IBR.clear()
                 self.__PC = self.__MAR
                 print(
                     f"Jumping to left instruction pointed by MAR (PC -> MAR): {convertToInt(self.__PC)}")
 
         if self.__IR == JUMPrIfG:
-            if convertToInt(self.__ALU.getAC()) > 0:
+            if convertToInt(self.__ALU.getAC()) >= 0:
                 self.__IBR.clear()
                 self.__PC = self.__MAR
                 self.flag = False
@@ -543,7 +544,7 @@ class ProgramControlUnit:
 
                 self.flag = True
 
-            if (convertToInt(self.__PC) == 43):
+            if (convertToInt(self.__PC) == 44):
                 print("hi")
 
             sleep(0.5)

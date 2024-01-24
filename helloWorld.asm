@@ -8,8 +8,8 @@
 0 //decimal part of value of resultant
 10 //temp-to store memory location of the starting of the vector
 1 //x0
-1 //x1
-1 //x2
+2 //x1
+3 //x2
 0 //x3
 0 //x4
 0 //buffer space for extra x components
@@ -40,9 +40,9 @@ LOAD M(1) ; SUB M(2) //AC=N-j
 ADD M(9) ; STOR M(35,28:39) // AC=AC+temp, changing the address to the next xi
 ADD M(30) ; STOR M(37,28:39) // AC=AC+2*N, changing the address to the next yi
 NOP ; LOAD M(2)
-LOAD M(2) ; SUB M(1) //
+LOAD M(2) ; SUB M(27) //
 STOR M(2) ; LOAD M(2) //j=j-1
-JUMP+ M(34,0:19) ; LOAD M(3) //while(j>=0)
+JUMP+ M(33,0:19) ; LOAD M(3) //while(j>=0)
 LOAD M(3) ; MUL M(3)
 LOAD MQ ; STOR M(5) //resx^2=resx**2
 LOAD M(4) ; MUL M(4)
