@@ -182,9 +182,8 @@ class Assembler:
 
         for line in self.__lines:
 
-            line = line.strip(" \n")
-
             line = line.split('//')[0]
+            line = line.strip(" \n")
             line = line.split(';')
 
             if (len(line) == 1 and line[0] == ''):

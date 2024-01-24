@@ -70,12 +70,13 @@ def convertToInt(word: str, mod=False) -> int:
     """
     Converts the given word to its integer reperesntation.
     """
-    if word[0] == '1' and not mod:
-        word = -int(word[1:], 2)
-    else:
-        word = int(word[1:], 2)
+    val = int(word[0]) * (2**len(word)-1) * -1
+    pow = len(word) - 2
+    for x in word[1:]:
+        val += 2**pow * int(x)
+        pow -= 1
 
-    return word
+    return val
 
 
 class MainMemory:
@@ -231,8 +232,8 @@ class ALU:
         val = convertToInt(self.__ACval)
         val *= word
         val = convertToBin(val, 80)
-        self.__MQval = val[-39:]
-        self.__ACval = val[:-39]
+        self.__MQval = val[-40:]
+        self.__ACval = val[:-40]
         self.__printAC()
         self.__printMQ()
 
@@ -461,14 +462,14 @@ class ProgramControlUnit:
             print(f"Stored AC at memory location: {convertToInt(self.__MAR)}")
 
         if self.__IR == STORr:
-            self.__MBR.put(self.__ALU[-12:])
+            self.__MBR.put(self.__ALU.getAC()[-12:])
             self.__MainMemory.replaceMemoryAddr(
                 convertToInt(self.__MAR), self.__MBR.get(), 0)
             print(f"Did the STOR M(X, 28:39) operation.")
             return
 
         if self.__IR == STORl:
-            self.__MBR.put(self.__ALU[-12:])
+            self.__MBR.put(self.__ALU.getAC()[-12:])
             self.__MainMemory.replaceMemoryAddr(
                 convertToInt(self.__MAR), self.__MBR.get(), 1)
             print(f"Did the STOR M(X, 8:19) operation.")
@@ -490,12 +491,6 @@ class ProgramControlUnit:
         """
         counter = 0
         while True:
-
-            sleep(0.5)
-            print()
-            print(f"""IR: {self.__IR} ({convertToInt(self.__IR)})\nMAR: {self.__MAR} ({convertToInt(self.__MAR)})\nMBR: {self.__MBR.get()}\nIBR: {
-                  self.__IBR.get()}\nAC: {self.__ALU.getAC()} ({convertToInt(self.__ALU.getAC())})\nMQ: {self.__ALU.getMQ()} ({convertToInt(self.__ALU.getMQ())})""")
-            print()
 
             if self.__IBR.isEmpty() and self.flag:
 
@@ -548,9 +543,17 @@ class ProgramControlUnit:
 
                 self.flag = True
 
+            if (convertToInt(self.__PC) == 43):
+                print("hi")
+
+            sleep(0.5)
+            print()
+            print(f"""IR: {self.__IR} ({convertToInt(self.__IR)})\nMAR: {self.__MAR} ({convertToInt(self.__MAR)})\nMBR: {self.__MBR.get()}\nIBR: {
+                  self.__IBR.get()}\nAC: {self.__ALU.getAC()} ({convertToInt(self.__ALU.getAC())})\nMQ: {self.__ALU.getMQ()} ({convertToInt(self.__ALU.getMQ())})\nPC: {self.__PC} ({convertToInt(self.__PC)})""")
             counter += 1
             print(counter)
+            print()
 
 
-CPU = ProgramControlUnit(MainMemory("helloWorld.obj"), ALU())
+CPU = ProgramControlUnit(MainMemory("helloWorld.obj"), ALU(), 31)
 CPU.run()
