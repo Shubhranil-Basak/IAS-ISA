@@ -120,7 +120,7 @@ class Assembler:
 
         TODO: Need to add functionality for more numeral systems. Like 0x, o.
         """
-        n = bin(abs(num1))[2:]
+        n = bin(abs(num1)).split('b')[1]
 
         number = '0'*(b-len(n)-1) + n
         if num1 < 0:
@@ -188,7 +188,8 @@ class Assembler:
 
                 self.__write(instruction + "\n")
 
-            elif (len(line) == 1 and not line[0].isnumeric()):
+            # need to check for negeative numbers
+            elif (len(line) == 1 and not line[0].isdecimal()):
                 instruction = self.__convertInstructionToBin(
                     line[0].strip(" \n"))
 

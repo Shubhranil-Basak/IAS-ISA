@@ -2,7 +2,7 @@
 0 //j-loop controller
 0 //resx
 0 //resy
-0 //resx^2
+-4 //resx^2
 0 //resy^2
 0 //magnitude of resultant
 0 //decimal part of value of resultant
