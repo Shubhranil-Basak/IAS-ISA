@@ -4,7 +4,7 @@ from time import sleep
 
 NOTHING = '0'*8 + ' ' + '0'*12
 HALT = '11111111'
-NOP = '00000000'
+NOP = '10000000'
 LOAD = '00000001'
 LOADNeg = '00000010'
 LOADMod = '00000011'
@@ -246,8 +246,7 @@ class ALU:
 
 class MBR:
     def __init__(self):
-        self.__value = convertToBin(
-            0, 8) + " " + convertToBin(0, 12) + ' ' + convertToBin(0, 8) + " " + convertToBin(0, 12)
+        self.__value = NOTHING + ' ' + NOTHING
 
     def put(self, value: str) -> None:
         """
@@ -281,7 +280,7 @@ class MBR:
 
 class IBR:
     def __init__(self):
-        self.__value = convertToBin(0, 8) + " " + convertToBin(0, 12)
+        self.__value = NOTHING
 
     def put(self, word: str) -> None:
         """
@@ -312,7 +311,7 @@ class IBR:
         """
         Checks if the IBR empty.
         """
-        if self.getOpCode() == NOP:
+        if self.__value == NOTHING:
             return True
         return False
 
@@ -535,7 +534,7 @@ class ProgramControlUnit:
 
                 self.flag = True
 
-            if (convertToInt(self.__PC) == 44):
+            if (convertToInt(self.__PC) == 16):
                 print("hi")
 
             sleep(0.5)
@@ -547,5 +546,5 @@ class ProgramControlUnit:
             print()
 
 
-CPU = ProgramControlUnit(MainMemory("helloWorld.obj"), ALU(), 31)
+CPU = ProgramControlUnit(MainMemory("helloWorld.obj"), ALU(), 1)
 CPU.run()

@@ -84,7 +84,7 @@ class Assembler:
             return '11111111'
 
         elif (op == 'NOP'):
-            return '00000000'
+            return '10000000'
 
         else:
             self.__printErrorAndExit(
@@ -188,15 +188,14 @@ class Assembler:
 
                 self.__write(instruction + "\n")
 
-            # need to check for negeative numbers
-            elif (len(line) == 1 and not line[0].isdecimal()):
-                instruction = self.__convertInstructionToBin(
-                    line[0].strip(" \n"))
+            elif (len(line) == 1 and (line[0].isdecimal() or line[0][0] == '-')):
+                instruction = self.__convertToBin(int(line[0]), 40)
 
                 self.__write(instruction + "\n")
 
-            elif (len(line) == 1 and line[0].isdecimal()):
-                instruction = self.__convertToBin(int(line[0]), 40)
+            elif (len(line) == 1 and not line[0].isdecimal()):
+                instruction = self.__convertInstructionToBin(
+                    line[0].strip(" \n"))
 
                 self.__write(instruction + "\n")
 
@@ -205,5 +204,5 @@ class Assembler:
         self.__oFh.close()
 
 
-asm = Assembler("helloWorld.asm", "helloWorld.obj")
+asm = Assembler("final.asm", "helloWorld.obj")
 asm.run()
