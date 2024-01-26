@@ -441,6 +441,20 @@ class ProgramControlUnit:
             self.__ALU.rsh()
             return
     
+    def __ForBubbleSort(self) -> None:
+        for x in range(37, convertToInt(self.__MainMemory.getWord(35))):
+                print(f"{convertToInt(self.__MainMemory.getWord(x))} ")
+        print(f"Swap: {convertToInt(self.__MainMemory.getWord(31))}")
+        print(f"Location of starting of array: {
+              convertToInt(self.__MainMemory.getWord(32))}")
+        print(f"Value of i: {convertToInt(self.__MainMemory.getWord(33))}")
+        print(
+            f"Value of i+1: {convertToInt(self.__MainMemory.getWord(34))}")
+        print(f"Value of N: {convertToInt(self.__MainMemory.getWord(35))}")
+        print(
+            f"Value of N-2: {convertToInt(self.__MainMemory.getWord(36))}")
+        print(f"PC: {convertToInt(self.__PC)}")
+    
     def __print(self) -> None:
         print()
         print(f'\033[1;31;50m IR -> \033[0;0m', end="")
@@ -522,6 +536,7 @@ class ProgramControlUnit:
 
             # sleep(0.5)
             self.__print()
+            # self.__ForBubbleSort()
 
 
 nameOfFile = "MatMul"
