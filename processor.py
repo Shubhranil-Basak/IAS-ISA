@@ -440,6 +440,24 @@ class ProgramControlUnit:
         if self.__IR == RSH:
             self.__ALU.rsh()
             return
+    
+    def __print(self) -> None:
+        print()
+        print(f'\033[1;31;50m IR -> \033[0;0m', end="")
+        print(f'\033[4;31;50m {self.__IR} ({convertToInt(self.__IR)}) \033[0;0m')
+        print(f'\033[1;32;50m MAR -> \033[0;0m', end="")
+        print(f'\033[4;32;50m {self.__MAR} ({convertToInt(self.__MAR)}) \033[0;0m')
+        print(f'\033[1;33;50m MBR -> \033[0;0m', end="")
+        print(f'\033[4;33;50m {self.__MBR.get()} \033[0;0m')
+        print(f'\033[1;34;50m IBR -> \033[0;0m', end="")
+        print(f'\033[4;34;50m {self.__IBR.get()} \033[0;0m')
+        print(f'\033[1;35;50m AC ->  \033[0;0m', end="")
+        print(f'\033[4;35;50m {self.__ALU.getAC()} ({convertToInt(self.__ALU.getAC())}) \033[0;0m')
+        print(f'\033[1;36;50m MQ -> \033[0;0m', end="")
+        print(f'\033[4;36;50m {self.__ALU.getMQ()} ({convertToInt(self.__ALU.getMQ())}) \033[0;0m')
+        print(f'\033[1;37;50m PC -> \033[0;0m', end="")
+        print(f'\033[4;37;50m {self.__PC} ({convertToInt(self.__PC)}) \033[0;0m')
+        print()
 
     def run(self) -> None:
         """
@@ -503,25 +521,10 @@ class ProgramControlUnit:
                 self.flag = True
 
             # sleep(0.5)
-            print()
-            print(f'\033[1;31;50m IR -> \033[0;0m', end="")
-            print(f'\033[4;31;50m {self.__IR} ({convertToInt(self.__IR)}) \033[0;0m')
-            print(f'\033[1;32;50m MAR -> \033[0;0m', end="")
-            print(f'\033[4;32;50m {self.__MAR} ({convertToInt(self.__MAR)}) \033[0;0m')
-            print(f'\033[1;33;50m MBR -> \033[0;0m', end="")
-            print(f'\033[4;33;50m {self.__MBR.get()} \033[0;0m')
-            print(f'\033[1;34;50m IBR -> \033[0;0m', end="")
-            print(f'\033[4;34;50m {self.__IBR.get()} \033[0;0m')
-            print(f'\033[1;35;50m AC ->  \033[0;0m', end="")
-            print(f'\033[4;35;50m {self.__ALU.getAC()} ({convertToInt(self.__ALU.getAC())}) \033[0;0m')
-            print(f'\033[1;36;50m MQ -> \033[0;0m', end="")
-            print(f'\033[4;36;50m {self.__ALU.getMQ()} ({convertToInt(self.__ALU.getMQ())}) \033[0;0m')
-            print(f'\033[1;37;50m PC -> \033[0;0m', end="")
-            print(f'\033[4;37;50m {self.__PC} ({convertToInt(self.__PC)}) \033[0;0m')
-            print()
+            self.__print()
 
 
-nameOfFile = ""
+nameOfFile = "MatMul"
 CPU = ProgramControlUnit(MainMemory(
     "object files/" + nameOfFile + ".obj"), ALU(), 1)
 CPU.run()
