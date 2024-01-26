@@ -8,21 +8,23 @@ NOP = '10000000'
 LOAD = '00000001'
 LOADNeg = '00000010'
 LOADMod = '00000011'
-LOADNegMod = '00000100'  # LOAD -|M(X)|
+LOADNegMod = '00000100'                 # LOAD -|M(X)|
 ADD = '00000101'
 SUB = '00000110'
 ADDMod = '00000111'
 SUBMod = '00001000'
-LOADMQM = '00001001'  # LOAD MQ,M(X)
+LOADMQM = '00001001'                    # LOAD MQ,M(X)
 LOADMQ = '00001010'
 MUL = '00001011'
 DIV = '00001100'
-JUMPl = '00001101'  # JUMP M(X,0:19)
-JUMPr = '00001110'  # JUMP M(X,20:39)
-JUMPlIfG = '00001111'  # JUMP+ M(X,0:19)
-JUMPrIfG = '00010000'  # JUMP+ M(X,20:39)
-STORl = '00010010'  # STOR M(X,8:19)
-STORr = '00010011'  # STOR M(X,28:39)
+JUMPl = '00001101'                      # JUMP M(X,0:19)
+JUMPr = '00001110'                      # JUMP M(X,20:39)
+JUMPlIfG = '00001111'                   # JUMP+ M(X,0:19)
+JUMPrIfG = '00010000'                   # JUMP+ M(X,20:39)
+JUMPlIfGG = '00011000'                  # JUMP++ M(X,0:19)
+JUMPrIfGG = '00011001'                  # JUMP++ M(X,20:39)
+STORl = '00010010'                      # STOR M(X,8:19)
+STORr = '00010011'                      # STOR M(X,28:39)
 LSH = '00010100'
 RSH = '00010101'
 STOR = '00100001'
@@ -446,6 +448,21 @@ class ProgramControlUnit:
                 # print(
                 # f"Jumping to right intruction pointed by MAR (PC -> MAR): {convertToInt(self.__PC)}")
 
+        if self.__IR == JUMPlIfGG:
+            if convertToInt(self.__ALU.getAC()) > 0:
+                self.__IBR.clear()
+                self.__PC = self.__MAR
+                # print(
+                #     f"Jumping to left instruction pointed by MAR (PC -> MAR): {convertToInt(self.__PC)}")
+
+        if self.__IR == JUMPrIfGG:
+            if convertToInt(self.__ALU.getAC()) > 0:
+                self.__IBR.clear()
+                self.__PC = self.__MAR
+                self.flag = False
+                # print(
+                # f"Jumping to right intruction pointed by MAR (PC -> MAR): {convertToInt(self.__PC)}")
+
         if self.__IR == STOR:
             self.__MBR.put(self.__ALU.getAC())
             self.__MainMemory.writeAtMem(
@@ -563,5 +580,6 @@ class ProgramControlUnit:
             print()
 
 
-CPU = ProgramControlUnit(MainMemory("helloWorld.obj"), ALU(), 1)
+CPU = ProgramControlUnit(MainMemory(
+    "object files/bubbleSort_fin.obj"), ALU(), 1)
 CPU.run()

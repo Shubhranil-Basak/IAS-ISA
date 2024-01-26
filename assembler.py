@@ -59,6 +59,12 @@ class Assembler:
         elif (op == 'RSH'):
             return '00010101'
 
+        elif (op == 'JUMP++' and address[-6:-1] == ',0:19'):
+            return '00011000'
+
+        elif (op == 'JUMP++' and address[-7:-1] == ',20:39'):
+            return '00011001'
+
         elif (op == 'JUMP+' and address[-6:-1] == ',0:19'):
             return '00001111'
 
@@ -204,5 +210,6 @@ class Assembler:
         self.__oFh.close()
 
 
-asm = Assembler("final.asm", "helloWorld.obj")
+asm = Assembler("assmebly codes/bubbleSort_fin.asm",
+                "object files/bubbleSort_fin.obj")
 asm.run()
