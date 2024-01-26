@@ -140,13 +140,13 @@ class ALU:
         """
         Prints contents of AC.
         """
-        print(f"---AC now contains {self.__ACval}---")
+        # print(f"---AC now contains {self.__ACval}---")
 
     def __printMQ(self) -> None:
         """
         Prints contents of AC.
         """
-        print(f"---MQ now contains {self.__MQval}---")
+        # print(f"---MQ now contains {self.__MQval}---")
 
     def putAC(self, word) -> None:
         """
@@ -253,7 +253,7 @@ class MBR:
         Stores the value in MBR.
         """
         self.__value = value
-        print(f"----Now MBR contains: {self.__value}----")
+        # print(f"----Now MBR contains: {self.__value}----")
 
     def get(self) -> str:
         """
@@ -287,7 +287,7 @@ class IBR:
         Puts an instruciton in the IBR.
         """
         self.__value = word
-        print(f"----IBR now contains {self.__value}---")
+        # print(f"----IBR now contains {self.__value}---")
 
     def get(self) -> str:
         """
@@ -347,58 +347,58 @@ class ProgramControlUnit:
         if self.__IR == LOAD:
             self.__MBR.put(self.__MainMemory.getWord(convertToInt(self.__MAR)))
             self.__ALU.putAC(self.__MBR.get())
-            print(f"Loaded AC with value M(MAR). AC: {self.__ALU.getAC()}")
+            # print(f"Loaded AC with value M(MAR). AC: {self.__ALU.getAC()}")
             return
 
         if self.__IR == LOADNeg:
             self.__MBR.put(
                 convertToBin(-convertToInt(self.__MainMemory.getWord(convertToInt(self.__MAR)))))
             self.__ALU.putAC(self.__MBR.get())
-            print(f"Loaded AC with value -M(MAR). AC: {self.__ALU.getAC()}")
+            # print(f"Loaded AC with value -M(MAR). AC: {self.__ALU.getAC()}")
             return
 
         if self.__IR == LOADMod:
             self.__MBR.put(convertToBin(
                 abs(convertToInt(self.__MainMemory.getWord(convertToInt(self.__MAR))))))
             self.__ALU.putAC(self.__MBR.get())
-            print(f"Loaded AC with value -M(MAR). AC: {self.__ALU.getAC()}")
+            # print(f"Loaded AC with value -M(MAR). AC: {self.__ALU.getAC()}")
             return
 
         if self.__IR == LOADNegMod:
             self.__MBR.put(
                 convertToBin(-abs(convertToInt(self.__MainMemory.getWord(convertToInt(self.__MAR))))))
             self.__ALU.putAC(self.__MBR.get())
-            print(f"Loaded AC with value -M(MAR). AC: {self.__ALU.getAC()}")
+            # print(f"Loaded AC with value -M(MAR). AC: {self.__ALU.getAC()}")
             return
 
         if self.__IR == ADD:
             self.__MBR.put(self.__MainMemory.getWord(convertToInt(self.__MAR)))
             self.__ALU.add(self.__MBR.get())
-            print(f"Added M(MAR) with AC. AC: {self.__ALU.getAC()}")
+            # print(f"Added M(MAR) with AC. AC: {self.__ALU.getAC()}")
             return
 
         if self.__IR == SUB:
             self.__MBR.put(self.__MainMemory.getWord(convertToInt(self.__MAR)))
             self.__ALU.sub(self.__MBR.get())
-            print(f"Added M(MAR) with AC. AC: {self.__ALU.getAC()}")
+            # print(f"Added M(MAR) with AC. AC: {self.__ALU.getAC()}")
             return
 
         if self.__IR == ADDMod:
             self.__MBR.put(self.__MainMemory.getWord(convertToInt(self.__MAR)))
             self.__ALU.add(self.__MBR.get(), mod=True)
-            print(f"Added M(MAR) with AC. AC: {self.__ALU.getAC()}")
+            # print(f"Added M(MAR) with AC. AC: {self.__ALU.getAC()}")
             return
 
         if self.__IR == SUBMod:
             self.__MBR.put(self.__MainMemory.getWord(convertToInt(self.__MAR)))
             self.__ALU.sub(self.__MBR.get(), mod=True)
-            print(f"Added M(MAR) with AC. AC: {self.__ALU.getAC()}")
+            # print(f"Added M(MAR) with AC. AC: {self.__ALU.getAC()}")
             return
 
         if self.__IR == LOADMQM:
             self.__MBR.put(self.__MainMemory.getWord(convertToInt(self.__MAR)))
             self.__ALU.putMQ(word)
-            print(f"Loaded MQ with value -M(MAR). MQ: {self.__ALU.getMQ()}")
+            # print(f"Loaded MQ with value -M(MAR). MQ: {self.__ALU.getMQ()}")
             return
 
         if self.__IR == LOADMQ:
@@ -409,71 +409,71 @@ class ProgramControlUnit:
         if self.__IR == MUL:
             self.__MBR.put(self.__MainMemory.getWord(convertToInt(self.__MAR)))
             self.__ALU.mul(self.__MBR.get())
-            print(f"Did the multiply operation.")
+            # print(f"Did the multiply operation.")
             return
 
         if self.__IR == DIV:
             word = self.__MainMemory.getWord(convertToInt(self.__MAR))
             self.__ALU.div(word)
-            print(f"Did the division operation.")
+            # print(f"Did the division operation.")
             return
 
         if self.__IR == JUMPl:
             self.__IBR.clear()
             self.__PC = self.__MAR
-            print(
-                f"Jumping to left instruction pointed by MAR (PC -> MAR): {convertToInt(self.__PC)}")
+            # print(
+            #     f"Jumping to left instruction pointed by MAR (PC -> MAR): {convertToInt(self.__PC)}")
 
         if self.__IR == JUMPr:
             self.__IBR.clear()
             self.__PC = self.__MAR
             self.flag = False
-            print(
-                f"Jumping to right intruction pointed by MAR (PC -> MAR): {convertToInt(self.__PC)}")
+            # print(
+            #     f"Jumping to right intruction pointed by MAR (PC -> MAR): {convertToInt(self.__PC)}")
 
         if self.__IR == JUMPlIfG:
             if convertToInt(self.__ALU.getAC()) >= 0:
                 self.__IBR.clear()
                 self.__PC = self.__MAR
-                print(
-                    f"Jumping to left instruction pointed by MAR (PC -> MAR): {convertToInt(self.__PC)}")
+                # print(
+                #     f"Jumping to left instruction pointed by MAR (PC -> MAR): {convertToInt(self.__PC)}")
 
         if self.__IR == JUMPrIfG:
             if convertToInt(self.__ALU.getAC()) >= 0:
                 self.__IBR.clear()
                 self.__PC = self.__MAR
                 self.flag = False
-                print(
-                    f"Jumping to right intruction pointed by MAR (PC -> MAR): {convertToInt(self.__PC)}")
+                # print(
+                # f"Jumping to right intruction pointed by MAR (PC -> MAR): {convertToInt(self.__PC)}")
 
         if self.__IR == STOR:
             self.__MBR.put(self.__ALU.getAC())
             self.__MainMemory.writeAtMem(
                 convertToInt(self.__MAR), self.__MBR.get())
-            print(f"Stored AC at memory location: {convertToInt(self.__MAR)}")
+            # print(f"Stored AC at memory location: {convertToInt(self.__MAR)}")
 
         if self.__IR == STORr:
             self.__MBR.put(self.__ALU.getAC()[-12:])
             self.__MainMemory.replaceMemoryAddr(
                 convertToInt(self.__MAR), self.__MBR.get(), 0)
-            print(f"Did the STOR M(X, 28:39) operation.")
+            # print(f"Did the STOR M(X, 28:39) operation.")
             return
 
         if self.__IR == STORl:
             self.__MBR.put(self.__ALU.getAC()[-12:])
             self.__MainMemory.replaceMemoryAddr(
                 convertToInt(self.__MAR), self.__MBR.get(), 1)
-            print(f"Did the STOR M(X, 8:19) operation.")
+            # print(f"Did the STOR M(X, 8:19) operation.")
             return
 
         if self.__IR == LSH:
             self.__ALU.lsh()
-            print(f"Did the LSH operator on AC.")
+            # print(f"Did the LSH operator on AC.")
             return
 
         if self.__IR == RSH:
             self.__ALU.rsh()
-            print(f"Did the RSH operator on AC.")
+            # print(f"Did the RSH operator on AC.")
             return
 
     def run(self) -> None:
@@ -482,6 +482,9 @@ class ProgramControlUnit:
         """
         counter = 0
         while True:
+
+            if (convertToInt(self.__PC) == 19):
+                print("hi")
 
             if self.__IBR.isEmpty() and self.flag:
 
@@ -510,7 +513,7 @@ class ProgramControlUnit:
             elif self.flag:
 
                 self.__IR, self.__MAR = self.__IBR.getOpCode(), self.__IBR.getMemAddr()
-                print(f"IR: {self.__IR}, MAR: {self.__MAR}")
+                # print(f"IR: {self.__IR}, MAR: {self.__MAR}")
 
                 self.__PC = convertToBin(convertToInt(self.__PC) + 1)
 
@@ -527,6 +530,7 @@ class ProgramControlUnit:
                 self.__IBR.put(self.__MBR.getri())
                 self.__IR = self.__IBR.getOpCode()
                 self.__MAR = self.__IBR.getMemAddr()
+                self.__IBR.clear()
 
                 self.__decodeAndExecute()
 
@@ -534,15 +538,28 @@ class ProgramControlUnit:
 
                 self.flag = True
 
-            if (convertToInt(self.__PC) == 16):
-                print("hi")
+            # sleep(0.5)
+            # print()
+            # print(f"""IR: {self.__IR} ({convertToInt(self.__IR)})\nMAR: {self.__MAR} ({convertToInt(self.__MAR)})\nMBR: {self.__MBR.get()}\nIBR: {
+            #       self.__IBR.get()}\nAC: {self.__ALU.getAC()} ({convertToInt(self.__ALU.getAC())})\nMQ: {self.__ALU.getMQ()} ({convertToInt(self.__ALU.getMQ())})\nPC: {self.__PC} ({convertToInt(self.__PC)})""")
+            # counter += 1
+            # print(counter)
+            # print()
 
-            sleep(0.5)
+            # debugging
             print()
-            print(f"""IR: {self.__IR} ({convertToInt(self.__IR)})\nMAR: {self.__MAR} ({convertToInt(self.__MAR)})\nMBR: {self.__MBR.get()}\nIBR: {
-                  self.__IBR.get()}\nAC: {self.__ALU.getAC()} ({convertToInt(self.__ALU.getAC())})\nMQ: {self.__ALU.getMQ()} ({convertToInt(self.__ALU.getMQ())})\nPC: {self.__PC} ({convertToInt(self.__PC)})""")
-            counter += 1
-            print(counter)
+            for x in range(37, convertToInt(self.__MainMemory.getWord(35))):
+                print(f"{convertToInt(self.__MainMemory.getWord(x))} ")
+            print(f"Swap: {convertToInt(self.__MainMemory.getWord(31))}")
+            print(f"Location of starting of array: {
+                  convertToInt(self.__MainMemory.getWord(32))}")
+            print(f"Value of i: {convertToInt(self.__MainMemory.getWord(33))}")
+            print(
+                f"Value of i+1: {convertToInt(self.__MainMemory.getWord(34))}")
+            print(f"Value of N: {convertToInt(self.__MainMemory.getWord(35))}")
+            print(
+                f"Value of N-2: {convertToInt(self.__MainMemory.getWord(36))}")
+            print(f"PC: {convertToInt(self.__PC)}")
             print()
 
 
