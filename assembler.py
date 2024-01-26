@@ -210,6 +210,6 @@ class Assembler:
         self.__oFh.close()
 
 
-asm = Assembler("assmebly codes/bubbleSort_fin.asm",
-                "object files/bubbleSort_fin.obj")
+asm = Assembler("assmebly codes/test-1.asm",
+                "object files/test-1.obj")
 asm.run()

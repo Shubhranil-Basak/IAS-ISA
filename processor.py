@@ -555,31 +555,9 @@ class ProgramControlUnit:
 
                 self.flag = True
 
-            # sleep(0.5)
-            # print()
-            # print(f"""IR: {self.__IR} ({convertToInt(self.__IR)})\nMAR: {self.__MAR} ({convertToInt(self.__MAR)})\nMBR: {self.__MBR.get()}\nIBR: {
-            #       self.__IBR.get()}\nAC: {self.__ALU.getAC()} ({convertToInt(self.__ALU.getAC())})\nMQ: {self.__ALU.getMQ()} ({convertToInt(self.__ALU.getMQ())})\nPC: {self.__PC} ({convertToInt(self.__PC)})""")
-            # counter += 1
-            # print(counter)
-            # print()
-
-            # debugging
-            print()
-            for x in range(37, convertToInt(self.__MainMemory.getWord(35))):
-                print(f"{convertToInt(self.__MainMemory.getWord(x))} ")
-            print(f"Swap: {convertToInt(self.__MainMemory.getWord(31))}")
-            print(f"Location of starting of array: {
-                  convertToInt(self.__MainMemory.getWord(32))}")
-            print(f"Value of i: {convertToInt(self.__MainMemory.getWord(33))}")
-            print(
-                f"Value of i+1: {convertToInt(self.__MainMemory.getWord(34))}")
-            print(f"Value of N: {convertToInt(self.__MainMemory.getWord(35))}")
-            print(
-                f"Value of N-2: {convertToInt(self.__MainMemory.getWord(36))}")
-            print(f"PC: {convertToInt(self.__PC)}")
-            print()
+            sleep(0.5)
 
 
 CPU = ProgramControlUnit(MainMemory(
-    "object files/bubbleSort_fin.obj"), ALU(), 1)
+    "object files/test-1.obj"), ALU(), 1)
 CPU.run()
