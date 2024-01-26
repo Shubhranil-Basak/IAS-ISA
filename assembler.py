@@ -210,6 +210,7 @@ class Assembler:
         self.__oFh.close()
 
 
-asm = Assembler("assmebly codes/test-1.asm",
-                "object files/test-1.obj")
+nameOfFile = "test-2"
+asm = Assembler("assmebly codes/" + nameOfFile + ".asm",
+                "object files/" + nameOfFile + ".obj")
 asm.run()
