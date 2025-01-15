@@ -27,15 +27,13 @@ The IAS machine, also known as the von Neumann machine, is a historical computer
    cd IAS-ISA
    ```
 
-2. Run the assembler:
-
+2. **Run the assembler**:
   ```bash
   python assembler.py assembly_codes/sample_program.asm
   ```
   This will generate a machine code file in the object_files/ directory.
 
-3. Run the simulator:
-
+3. **Run the simulator**:
   ```bash
   python processor.py object_files/sample_program.obj
   ```
