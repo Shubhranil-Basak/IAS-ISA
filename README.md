@@ -50,6 +50,4 @@ The IAS machine, also known as the von Neumann machine, is a historical computer
 ## License
   This project is licensed under the MIT License.
 
-```css
 ::contentReference[oaicite:0]{index=0}
-```
