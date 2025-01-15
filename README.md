@@ -28,22 +28,22 @@ The IAS machine, also known as the von Neumann machine, is a historical computer
    ```
 
 2. **Run the assembler**:
-  ```bash
-  python assembler.py assembly_codes/sample_program.asm
-  ```
-  This will generate a machine code file in the object_files/ directory.
+   ```bash
+   python assembler.py assembly_codes/sample_program.asm
+   ```
+   This will generate a machine code file in the object_files/ directory.
 
 3. **Run the simulator**:
-  ```bash
-  python processor.py object_files/sample_program.obj
-  ```
-  This will execute the machine code and display the output.
+   ```bash
+   python processor.py object_files/sample_program.obj
+   ```
+   This will execute the machine code and display the output.
 
 ## Requirements
-  Python 3.x
+   Python 3.x
 
 ## Contributing
-  Contributions are welcome! Feel free to open issues or submit pull requests.
+   Contributions are welcome! Feel free to open issues or submit pull requests.
 
 ## License
-  This project is licensed under the MIT License.
+   This project is licensed under the MIT License.
